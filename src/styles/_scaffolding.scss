@@ -1,0 +1,14 @@
+.clickable {
+  cursor: pointer;
+}
+
+.slim-gutters {
+  margin-right: -($grid-gutter-width-slim / 2);
+  margin-left: -($grid-gutter-width-slim / 2);
+
+  > .col,
+  > [class*="col-"] {
+    padding-right: $grid-gutter-width-slim / 2;
+    padding-left: $grid-gutter-width-slim / 2;
+  }
+}

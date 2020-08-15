@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`outputs the expected tree when loading 1`] = `
+<div
+  className="spinner"
+>
+  <div
+    className="bounce1"
+  />
+  <div
+    className="bounce2"
+  />
+  <div
+    className="bounce3"
+  />
+</div>
+`;
+
+exports[`outputs the expected tree when not loading 1`] = `""`;

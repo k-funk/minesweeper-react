@@ -1,0 +1,11 @@
+// 1. Would prefer the class to not be on the html element, but without it, bootstrap's `body` imports don't work
+// 2. This doubles the size of the css, but is much easier to maintain. worth the compromise for now
+@import 'variables';
+@import 'bootstrap/scss/bootstrap';
+
+@import 'scaffolding';
+@import 'loader';
+
+// Third-party
+@import '@fortawesome/fontawesome-free/scss/fontawesome';
+@import '@fortawesome/fontawesome-free/scss/solid';
