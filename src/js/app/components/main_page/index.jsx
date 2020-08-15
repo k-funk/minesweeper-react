@@ -1,27 +1,32 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { PropTypes as T } from 'prop-types';
 import classNames from 'classnames';
 
-import Loader from 'app/components/loader';
+import Board from 'app/components/board';
 
 
-export default class MainPage extends PureComponent {
-  static propTypes = {
-    className: T.string,
-  };
+export const GAME_STATUS = {
+  NOT_STARTED: 'notStarted',
+  LOST: 'lost',
+  WON: 'won',
+  IN_PROGRESS: 'inProgress',
+};
 
-  static defaultProps = {
-    className: '',
-  }
-
-  render() {
-    const { className } = this.props;
-
-    return (
-      <div className={classNames(className)}>
-        Hello World!
-        <Loader loading />
+export default function MainPage({ className }) {
+  return (
+    <div className={classNames(className)}>
+      <div>
+        {GAME_STATUS.NOT_STARTED}
       </div>
-    );
-  }
+      <div>
+        Mines Left/flags left to place: 0 FIXME
+      </div>
+      {/* TODO: get this info from the user */}
+      <Board width={4} height={4} mines={2} />
+    </div>
+  );
 }
+
+MainPage.propTypes = {
+  className: T.string,
+};

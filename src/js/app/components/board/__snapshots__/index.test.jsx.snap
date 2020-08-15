@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`outputs the expected tree when (default 1`] = `
+<div
+  className=""
+>
+  Hello World!
+  <Loader
+    className=""
+    loading={true}
+    small={false}
+  />
+</div>
+`;

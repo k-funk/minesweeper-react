@@ -2,7 +2,7 @@ const Path = require('path');
 const Webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
+// const CopyPlugin = require('copy-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
 
@@ -32,11 +32,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './index.html',
     }),
-    new CopyPlugin({
-      patterns: [
-        { from: IMAGES_PATH },
-      ],
-    }),
+    // new CopyPlugin({
+    //   patterns: [
+    //     { from: IMAGES_PATH },
+    //   ],
+    // }),
   ],
   resolve: {
     extensions: ['.js', '.jsx'],
