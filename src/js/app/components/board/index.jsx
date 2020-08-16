@@ -104,11 +104,11 @@ export const getNeighbors = (board, x, y) => {
 export const setNeighbors = board => {
   board.forEach((row, rowIdx) => (
     row.forEach((cell, cellIdx) => {
-      const nearbyMines = getNeighbors(board, rowIdx, cellIdx).reduce((acc, neighborCell) => {
-        if (neighborCell.isMine) { acc += 1; }
-        return acc;
-      }, 0);
-      cell.neighbors = nearbyMines;
+      cell.neighbors = getNeighbors(board, rowIdx, cellIdx)
+        .reduce((acc, neighborCell) => {
+          if (neighborCell.isMine) { acc += 1; }
+          return acc;
+        }, 0);
     })
   ));
 };
@@ -125,6 +125,7 @@ export const initBoardData = (width, height, mines) => {
   const board = makeBoard2DArray(width, height);
   plantMines(board, mines);
   setNeighbors(board);
+  // revealAllCells(board); // FIXME: for debugging only
   return board;
 };
 
@@ -132,8 +133,22 @@ export const initBoardData = (width, height, mines) => {
 export default function Board({ className, width, height, mines }) {
   const [board, setBoard] = useState(initBoardData(width, height, mines));
 
-  const onClickCell = cellData => {
-    console.log('cell clicked');
+  const handleCellClick = cellData => {
+    const { isFlagged, isMine } = cellData;
+    if (!isFlagged && isMine) {
+      revealAllCells(board);
+      setBoard([...board]);
+    }
+  };
+
+  const handleCellContextMenu = (event, cellData) => {
+    event.preventDefault();
+    const { isRevealed } = cellData;
+    if (!isRevealed) {
+      cellData.isFlagged = !cellData.isFlagged;
+      // FIXME: need to update the total mines flagged
+      setBoard([...board]);
+    }
   };
 
   return (
@@ -142,8 +157,13 @@ export default function Board({ className, width, height, mines }) {
         // eslint-disable-next-line react/no-array-index-key
         <StyledRow key={`row-${i}`}>
           {row.map((cell, j) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <Cell key={`cell-${i},${j}`} cellData={cell} onClick={onClickCell} />
+            <Cell
+              // eslint-disable-next-line react/no-array-index-key
+              key={`cell-${i},${j}`}
+              cellData={cell}
+              onClick={handleCellClick}
+              onContextMenu={handleCellContextMenu}
+            />
           ))}
         </StyledRow>
       ))}

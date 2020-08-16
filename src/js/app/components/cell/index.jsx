@@ -5,11 +5,18 @@ import styled from 'styled-components';
 
 
 const StyledCellButton = styled.button`
-  background: #eee;
-  height: 40px;
-  width: 40px;
+  background-color: #eee;
+  height: 50px;
+  width: 50px;
   border: 1px solid #fff;
   
+  &:hover {
+    background-color: #ddd;
+  }
+  
+  &:focus {
+    outline: none;
+  }
 `;
 
 
@@ -28,12 +35,13 @@ export const getSymbol = cellData => {
   return ' ';
 };
 
-export default function Cell({ className, cellData, onClick }) {
+export default function Cell({ className, cellData, onClick, onContextMenu }) {
   return (
     <StyledCellButton
       className={classNames(className)}
       type="button"
       onClick={() => onClick(cellData)}
+      onContextMenu={event => onContextMenu(event, cellData)}
     >
       {getSymbol(cellData)}
     </StyledCellButton>
@@ -44,4 +52,5 @@ Cell.propTypes = {
   className: T.string,
   cellData: T.object.isRequired,
   onClick: T.func.isRequired,
+  onContextMenu: T.func.isRequired,
 };
