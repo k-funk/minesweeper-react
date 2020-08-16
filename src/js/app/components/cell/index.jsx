@@ -9,13 +9,22 @@ const StyledCellButton = styled.button`
   height: 40px;
   width: 40px;
   border: 1px solid #fff;
+  
 `;
 
 
 export const getSymbol = cellData => {
-  if (cellData.isBomb) {
-    return 'b';
+  if (cellData.isFlagged) {
+    return 'f';
   }
+
+  if (cellData.isRevealed) {
+    if (cellData.isMine) {
+      return 'm';
+    }
+    return cellData.neighbors;
+  }
+
   return ' ';
 };
 

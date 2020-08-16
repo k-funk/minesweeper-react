@@ -12,9 +12,7 @@ exports[`outputs the expected tree when (default) 1`] = `
       <Route
         path="/"
       >
-        <MainPage
-          className=""
-        />
+        <MainPage />
       </Route>
     </Switch>
   </Container>

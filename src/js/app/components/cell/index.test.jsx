@@ -2,15 +2,15 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import shallowToJson from 'enzyme-to-json';
 
-import Board from './index';
+import Cell from './index';
 
 
 describe('outputs the expected tree when', () => {
   let wrapper;
 
-  test('(default', () => {
+  test('(default)', () => {
     wrapper = shallow((
-      <Board />
+      <Cell cellData={{}} onClick={() => {}} />
     ));
   });
 

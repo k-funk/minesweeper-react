@@ -1,14 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`outputs the expected tree when (default 1`] = `
-<div
+<styled.button
   className=""
+  onClick={[Function]}
+  type="button"
 >
-  Hello World!
-  <Loader
-    className=""
-    loading={true}
-    small={false}
-  />
-</div>
+   
+</styled.button>
 `;

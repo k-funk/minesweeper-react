@@ -4,11 +4,16 @@ exports[`outputs the expected tree when (default 1`] = `
 <div
   className=""
 >
-  Hello World!
-  <Loader
-    className=""
-    loading={true}
-    small={false}
+  <div>
+    notStarted
+  </div>
+  <div>
+    Mines Left/flags left to place: 0 FIXME
+  </div>
+  <Board
+    height={4}
+    mines={2}
+    width={4}
   />
 </div>
 `;
