@@ -22,7 +22,7 @@ export default function MainPage({ className }) {
         Mines Left/flags left to place: 0 FIXME
       </div>
       {/* TODO: get this info from the user */}
-      <Board width={4} height={4} mines={2} />
+      <Board width={5} height={6} mines={2} />
     </div>
   );
 }

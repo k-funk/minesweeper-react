@@ -5,10 +5,14 @@ import styled from 'styled-components';
 
 
 const StyledCellButton = styled.button`
-  background-color: #eee;
+  background-color: ${props => (props.isRevealed ? '#eee' : '#aaa')};
   height: 50px;
   width: 50px;
   border: 1px solid #fff;
+  font-weight: bold;
+  font-size: 1.5rem;
+  user-select: none;
+  padding: 0;
   
   &:hover {
     background-color: #ddd;
@@ -19,17 +23,30 @@ const StyledCellButton = styled.button`
   }
 `;
 
+export const neighborsColorMap = {
+  0: 'transparent',
+  1: 'blue',
+  2: 'green',
+  3: 'red',
+  4: 'purple',
+  5: 'maroon',
+  6: 'turquoise',
+  7: 'black',
+  8: 'gray',
+};
+
 
 export const getSymbol = cellData => {
-  if (cellData.isFlagged) {
+  const { isFlagged, isRevealed, isMine, neighbors } = cellData;
+  if (isFlagged) {
     return 'f';
   }
 
-  if (cellData.isRevealed) {
-    if (cellData.isMine) {
+  if (isRevealed) {
+    if (isMine) {
       return 'm';
     }
-    return cellData.neighbors;
+    return <span style={{ color: neighborsColorMap[neighbors] }}>{neighbors}</span>;
   }
 
   return ' ';
@@ -42,6 +59,7 @@ export default function Cell({ className, cellData, onClick, onContextMenu }) {
       type="button"
       onClick={() => onClick(cellData)}
       onContextMenu={event => onContextMenu(event, cellData)}
+      isRevealed={cellData.isRevealed}
     >
       {getSymbol(cellData)}
     </StyledCellButton>

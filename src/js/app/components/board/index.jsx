@@ -11,9 +11,23 @@ const StyledRow = styled.div`
   display: flex;
 `;
 
+export const isWon = (board, mines) => {
+  let revealedTiles = 0;
+  board.forEach(row => (
+    row.forEach(cell => {
+      if (cell.isRevealed) {
+        revealedTiles += 1;
+      }
+    })
+  ));
+
+  return revealedTiles === (board.length * board[0].length) - mines;
+};
 
 export const makeBoard2DArray = (width, height) => (
-  [...new Array(width)].map(() => [...new Array(height)].map(() => ({
+  [...new Array(height)].map((_, x) => [...new Array(width)].map((__, y) => ({
+    x,
+    y,
     isMine: false,
     isRevealed: false,
     isFlagged: false,
@@ -26,10 +40,10 @@ export const generateUniqueRandomInts = (amount, upperLimit) => {
   return sampleSize(possibleNums, amount);
 };
 
-export const plantMine = (board, index) => {
-  const width = board.length;
-  const x = Math.floor(index / width);
-  const y = index % width;
+export const plantMine = (board, flatIndex) => {
+  const width = board[0].length;
+  const x = Math.floor(flatIndex / width);
+  const y = flatIndex % width;
   board[x][y].isMine = true;
 };
 
@@ -48,49 +62,51 @@ export const plantMines = (board, mines) => {
   const indexesOfMinesFlattened = generateUniqueRandomInts(mines, totalCells);
 
   // mark that cell as having a mine
-  indexesOfMinesFlattened.forEach(index => {
-    plantMine(board, index);
+  indexesOfMinesFlattened.forEach(flatIndex => {
+    plantMine(board, flatIndex);
   });
 };
 
-export const getNeighbors = (board, x, y) => {
+export const getNeighbors = (board, cell) => {
+  const { x, y } = cell;
   const neighbors = [];
-  const widthMaxIdx = board.length - 1;
-  const heightMaxIdx = board[0].length - 1;
+  const xMaxIdx = board[0].length - 1;
+  const yMaxIdx = board.length - 1;
+  // const widthMaxIdx = board[0].length - 1;
 
   // up
-  if (y > 0) {
-    neighbors.push(board[x][y - 1]);
+  if (x > 0) {
+    neighbors.push(board[x - 1][y]);
   }
 
   // up+right
-  if (y > 0 && x < widthMaxIdx) {
-    neighbors.push(board[x + 1][y - 1]);
+  if (x > 0 && y < xMaxIdx) {
+    neighbors.push(board[x - 1][y + 1]);
   }
 
   // right
-  if (x < widthMaxIdx) {
-    neighbors.push(board[x + 1][y]);
+  if (y < xMaxIdx) {
+    neighbors.push(board[x][y + 1]);
   }
 
   // down+right
-  if (y < heightMaxIdx && x < widthMaxIdx) {
+  if (x < yMaxIdx && y < xMaxIdx) {
     neighbors.push(board[x + 1][y + 1]);
   }
 
   // down
-  if (y < heightMaxIdx) {
-    neighbors.push(board[x][y + 1]);
+  if (x < yMaxIdx) {
+    neighbors.push(board[x + 1][y]);
   }
 
   // down+left
-  if (x > 0 && y < heightMaxIdx) {
-    neighbors.push(board[x - 1][y + 1]);
+  if (x < yMaxIdx && y > 0) {
+    neighbors.push(board[x + 1][y - 1]);
   }
 
   // left
-  if (x > 0) {
-    neighbors.push(board[x - 1][y]);
+  if (y > 0) {
+    neighbors.push(board[x][y - 1]);
   }
 
   // up+left
@@ -102,15 +118,27 @@ export const getNeighbors = (board, x, y) => {
 };
 
 export const setNeighbors = board => {
-  board.forEach((row, rowIdx) => (
-    row.forEach((cell, cellIdx) => {
-      cell.neighbors = getNeighbors(board, rowIdx, cellIdx)
+  board.forEach(row => (
+    row.forEach(cell => {
+      cell.neighbors = getNeighbors(board, cell)
         .reduce((acc, neighborCell) => {
           if (neighborCell.isMine) { acc += 1; }
           return acc;
         }, 0);
     })
   ));
+};
+
+export const revealNeighboringZeros = (board, cell) => {
+  const neighborCells = getNeighbors(board, cell);
+  neighborCells.forEach(neighborCell => {
+    if (!neighborCell.isRevealed && !neighborCell.isMine) {
+      neighborCell.isRevealed = true;
+      if (neighborCell.neighbors === 0) {
+        revealNeighboringZeros(board, neighborCell);
+      }
+    }
+  });
 };
 
 export const revealAllCells = board => {
@@ -125,30 +153,53 @@ export const initBoardData = (width, height, mines) => {
   const board = makeBoard2DArray(width, height);
   plantMines(board, mines);
   setNeighbors(board);
-  // revealAllCells(board); // FIXME: for debugging only
   return board;
 };
 
 
 export default function Board({ className, width, height, mines }) {
-  const [board, setBoard] = useState(initBoardData(width, height, mines));
+  const [board, setBoard] = useState(() => initBoardData(width, height, mines));
+
+  const rerenderBoard = () => {
+    setBoard([...board]);
+  };
 
   const handleCellClick = cellData => {
-    const { isFlagged, isMine } = cellData;
-    if (!isFlagged && isMine) {
+    const { isFlagged, isMine, neighbors } = cellData;
+
+    // TODO: consider disabling clicks if game is won/lost
+    if (isFlagged) { return; }
+
+    if (isMine) {
       revealAllCells(board);
-      setBoard([...board]);
+      rerenderBoard();
+      // FIXME: tell the parent
+      return;
     }
+
+    cellData.isRevealed = true;
+
+    if (neighbors === 0) {
+      revealNeighboringZeros(board, cellData);
+    }
+    rerenderBoard();
   };
 
   const handleCellContextMenu = (event, cellData) => {
     event.preventDefault();
     const { isRevealed } = cellData;
-    if (!isRevealed) {
-      cellData.isFlagged = !cellData.isFlagged;
-      // FIXME: need to update the total mines flagged
-      setBoard([...board]);
+
+    if (isRevealed) { return; }
+
+    cellData.isFlagged = !cellData.isFlagged;
+
+    if (cellData.isFlagged) {
+      if (isWon(board, mines)) {
+        // FIXME: tell the parent
+      }
     }
+    // FIXME: update the total mines flagged in parent
+    rerenderBoard();
   };
 
   return (
