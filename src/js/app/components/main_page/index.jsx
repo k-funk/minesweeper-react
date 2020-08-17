@@ -2,27 +2,13 @@ import React from 'react';
 import { PropTypes as T } from 'prop-types';
 import classNames from 'classnames';
 
-import Board from 'app/components/board';
+import Game from 'app/components/game';
 
-
-export const GAME_STATUS = {
-  NOT_STARTED: 'notStarted',
-  LOST: 'lost',
-  WON: 'won',
-  IN_PROGRESS: 'inProgress',
-};
 
 export default function MainPage({ className }) {
   return (
-    <div className={classNames(className)}>
-      <div>
-        {GAME_STATUS.NOT_STARTED}
-      </div>
-      <div>
-        Mines Left/flags left to place: 0 FIXME
-      </div>
-      {/* TODO: get this info from the user */}
-      <Board width={5} height={6} mines={2} />
+    <div className={classNames(className, 'd-flex justify-content-center')}>
+      <Game />
     </div>
   );
 }
