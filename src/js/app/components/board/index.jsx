@@ -10,7 +10,7 @@ const StyledRow = styled.div`
   display: flex;
 `;
 
-export default function Board({ className, board, onCellClick, onCellContextMenu }) {
+export default function Board({ className, board, onCellClick, onCellContextMenu, gameStatus }) {
   return (
     <div className={classNames(className)}>
       {board.map((row, i) => (
@@ -23,6 +23,7 @@ export default function Board({ className, board, onCellClick, onCellContextMenu
               cellData={cell}
               onClick={onCellClick}
               onContextMenu={onCellContextMenu}
+              gameStatus={gameStatus}
             />
           ))}
         </StyledRow>
@@ -47,4 +48,5 @@ Board.propTypes = {
   ),
   onCellClick: T.func.isRequired,
   onCellContextMenu: T.func.isRequired,
+  gameStatus: T.string.isRequired,
 };

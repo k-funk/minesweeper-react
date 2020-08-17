@@ -8,18 +8,13 @@ import styled from 'styled-components';
 
 import Board from 'app/components/board';
 import DifficultySelector from 'app/components/difficulty_selector';
+import { GAME_STATUS } from 'app/constants';
+
 
 const FlagsRemainingContainer = styled.div`
   width: 60px;
 `;
 
-
-export const GAME_STATUS = {
-  NOT_STARTED: 'notStarted',
-  LOST: 'lost',
-  WON: 'won',
-  IN_PROGRESS: 'inProgress',
-};
 
 export const isWon = (board, mines) => {
   let revealedTiles = 0;
@@ -262,6 +257,7 @@ export default function Game({ className }) {
         board={board}
         onCellClick={handleCellClick}
         onCellContextMenu={handleCellContextMenu}
+        gameStatus={gameStatus}
       />
     </div>
   );

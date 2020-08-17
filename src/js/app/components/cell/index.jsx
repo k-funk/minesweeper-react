@@ -3,9 +3,21 @@ import { PropTypes as T } from 'prop-types';
 import classNames from 'classnames';
 import styled from 'styled-components';
 
+import { GAME_STATUS } from 'app/constants';
+
 
 const StyledCellButton = styled.button`
-  background-color: ${props => (props.isRevealed ? '#eee' : '#aaa')};
+  background-color: ${({ gameStatus, isRevealed, isFlagged, isMine }) => {
+    if (gameStatus === GAME_STATUS.LOST && isFlagged && !isMine) {
+      return '#ffcfcf';
+    }
+
+    if (isRevealed) {
+      return '#eee';
+    }
+
+    return '#aaa';
+  }};
   height: 40px;
   width: 40px;
   border: 1px solid #fff;
@@ -14,8 +26,9 @@ const StyledCellButton = styled.button`
   user-select: none;
   padding: 0;
   
+  // unwrap this?
   &:hover {
-    background-color: #ddd;
+    background-color: ${props => (props.isRevealed ? '' : '#ddd')};
   }
   
   &:focus {
@@ -36,9 +49,12 @@ export const neighborsColorMap = {
 };
 
 
-export const getSymbol = cellData => {
+export const getSymbol = (cellData, gameStatus) => {
   const { isFlagged, isRevealed, isMine, neighbors } = cellData;
-  if (isFlagged) {
+  if (
+    (isFlagged && gameStatus !== GAME_STATUS.LOST) ||
+    (isFlagged && gameStatus && isMine === true) // they incorrectly flagged the tile
+  ) {
     return <span role="img" aria-label="Flags Remaining">🚩</span>;
   }
 
@@ -52,16 +68,20 @@ export const getSymbol = cellData => {
   return ' ';
 };
 
-export default function Cell({ className, cellData, onClick, onContextMenu }) {
+export default function Cell({ className, cellData, onClick, onContextMenu, gameStatus }) {
+  const { isRevealed, isMine, isFlagged } = cellData;
   return (
     <StyledCellButton
       className={classNames(className)}
       type="button"
       onClick={() => onClick(cellData)}
       onContextMenu={event => onContextMenu(event, cellData)}
-      isRevealed={cellData.isRevealed}
+      isRevealed={isRevealed}
+      isMine={isMine}
+      isFlagged={isFlagged}
+      gameStatus={gameStatus}
     >
-      {getSymbol(cellData)}
+      {getSymbol(cellData, gameStatus)}
     </StyledCellButton>
   );
 }
@@ -71,4 +91,5 @@ Cell.propTypes = {
   cellData: T.object.isRequired,
   onClick: T.func.isRequired,
   onContextMenu: T.func.isRequired,
+  gameStatus: T.string.isRequired,
 };
