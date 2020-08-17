@@ -37,6 +37,7 @@ export const makeBoard2DArray = (width, height) => (
     isRevealed: false,
     isFlagged: false,
     neighbors: 0,
+    exploded: false,
   })))
 );
 
@@ -192,6 +193,7 @@ export default function Game({ className }) {
     }
 
     if (isMine) {
+      cellData.exploded = true;
       revealAllCells(board);
       setGameStatus(GAME_STATUS.LOST);
       rerenderBoard();

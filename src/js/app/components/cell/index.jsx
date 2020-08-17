@@ -7,7 +7,11 @@ import { GAME_STATUS } from 'app/constants';
 
 
 const StyledCellButton = styled.button`
-  background-color: ${({ gameStatus, isRevealed, isFlagged, isMine }) => {
+  background-color: ${({ gameStatus, isRevealed, isFlagged, isMine, exploded }) => {
+    if (exploded) {
+      return '#ff5d5d';
+    }
+
     if (gameStatus === GAME_STATUS.LOST && isFlagged && !isMine) {
       return '#ffcfcf';
     }
@@ -18,18 +22,24 @@ const StyledCellButton = styled.button`
 
     return '#aaa';
   }};
-  height: 40px;
-  width: 40px;
-  border: 1px solid #fff;
+  height: 35px;
+  width: 35px;
+  border: 1px solid transparent;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   user-select: none;
   padding: 0;
+  background-clip: padding-box;
   
-  // unwrap this?
-  &:hover {
-    background-color: ${props => (props.isRevealed ? '' : '#ddd')};
-  }
+  ${({ isRevealed }) => (!isRevealed && `
+    &:hover {
+      background-color: #ddd;
+    }
+  `)}
+  
+  ${({ isRevealed }) => (isRevealed && `
+    box-shadow: inset 2px 2px 4px 0px rgba(0,0,0,0.2);
+  `)}
   
   &:focus {
     outline: none;
@@ -69,7 +79,7 @@ export const getSymbol = (cellData, gameStatus) => {
 };
 
 export default function Cell({ className, cellData, onClick, onContextMenu, gameStatus }) {
-  const { isRevealed, isMine, isFlagged } = cellData;
+  const { isRevealed, isMine, isFlagged, exploded } = cellData;
   return (
     <StyledCellButton
       className={classNames(className)}
@@ -80,6 +90,7 @@ export default function Cell({ className, cellData, onClick, onContextMenu, game
       isMine={isMine}
       isFlagged={isFlagged}
       gameStatus={gameStatus}
+      exploded={exploded}
     >
       {getSymbol(cellData, gameStatus)}
     </StyledCellButton>
