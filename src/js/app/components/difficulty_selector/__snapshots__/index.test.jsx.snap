@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`outputs the expected tree when (default 1`] = `
+<styled.button
+  className=""
+  onClick={[Function]}
+  type="button"
+>
+   
+</styled.button>
+`;

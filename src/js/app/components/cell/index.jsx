@@ -6,8 +6,8 @@ import styled from 'styled-components';
 
 const StyledCellButton = styled.button`
   background-color: ${props => (props.isRevealed ? '#eee' : '#aaa')};
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
   border: 1px solid #fff;
   font-weight: bold;
   font-size: 1.5rem;

@@ -4,6 +4,7 @@ import { range, sampleSize } from 'lodash';
 import classNames from 'classnames';
 
 import Board from 'app/components/board';
+import DifficultySelector from 'app/components/difficulty_selector';
 
 
 export const GAME_STATUS = {
@@ -159,15 +160,16 @@ export const initBoardData = boardConfig => {
   return board;
 };
 
+// mine density on these is about 15%
 export const BOARD_CONFIGS = {
-  BEGINNER: { width: 9, height: 9, mines: 10 },
-  INTERMEDIATE: { width: 16, height: 16, mines: 40 },
-  EXPERT: { width: 16, height: 30, mines: 99 },
+  EASY: { readable: 'Easy', width: 7, height: 9, mines: 10 },
+  MEDIUM: { readable: 'Medium', width: 14, height: 18, mines: 38 },
+  HARD: { readable: 'Hard', width: 21, height: 27, mines: 85 },
 };
 
 
 export default function Game({ className }) {
-  const [boardConfig, setBoardConfig] = useState(BOARD_CONFIGS.BEGINNER);
+  const [boardConfig, setBoardConfig] = useState(BOARD_CONFIGS.EASY);
   const [board, setBoard] = useState(() => initBoardData(boardConfig));
   const [gameStatus, setGameStatus] = useState(GAME_STATUS.NOT_STARTED);
   const [flagged, setFlagged] = useState(0);
@@ -177,7 +179,6 @@ export default function Game({ className }) {
   };
 
   const handleCellClick = cellData => {
-    console.log('handleCellClick');
     const { isFlagged, isMine, neighbors } = cellData;
 
     if (
@@ -192,7 +193,6 @@ export default function Game({ className }) {
       revealAllCells(board);
       setGameStatus(GAME_STATUS.LOST);
       rerenderBoard();
-      // FIXME: tell the parent
       return;
     }
 
@@ -205,7 +205,6 @@ export default function Game({ className }) {
 
     if (isWon(board, boardConfig.mines)) {
       setGameStatus(GAME_STATUS.WON);
-      // FIXME: tell the parent
     }
 
     rerenderBoard();
@@ -222,6 +221,15 @@ export default function Game({ className }) {
     setFlagged(cellData.isFlagged ? flagged + 1 : flagged - 1);
   };
 
+  const handleDifficultySelect = difficulty => {
+    console.log(difficulty);
+    const newBoardConfig = BOARD_CONFIGS[difficulty];
+    console.log(newBoardConfig);
+    setBoardConfig(newBoardConfig);
+    setBoard(initBoardData(newBoardConfig));
+    setGameStatus(GAME_STATUS.NOT_STARTED);
+  };
+
   const handleResetBoard = () => {
     setBoard(initBoardData(boardConfig));
     setGameStatus(GAME_STATUS.NOT_STARTED);
@@ -231,6 +239,11 @@ export default function Game({ className }) {
     <div className={classNames(className)}>
       <div>Game Status: {gameStatus}</div>
       <div>Flags Remaining: {boardConfig.mines - flagged}</div>
+      <DifficultySelector
+        onSelect={handleDifficultySelect}
+        options={BOARD_CONFIGS}
+        currentDifficulty={boardConfig.readable}
+      />
       <button type="button" onClick={handleResetBoard}>reset</button>
       <Board
         board={board}
