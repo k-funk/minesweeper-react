@@ -30,10 +30,12 @@ const StyledCellButton = styled.button`
   user-select: none;
   padding: 0;
   background-clip: padding-box;
+  transition: background-color 1000ms ease-out;
   
   ${({ isRevealed }) => (!isRevealed && `
     &:hover {
       background-color: #ddd;
+      transition: none;
     }
   `)}
   
