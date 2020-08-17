@@ -39,12 +39,12 @@ export const neighborsColorMap = {
 export const getSymbol = cellData => {
   const { isFlagged, isRevealed, isMine, neighbors } = cellData;
   if (isFlagged) {
-    return 'f';
+    return <span role="img" aria-label="Flags Remaining">🚩</span>;
   }
 
   if (isRevealed) {
     if (isMine) {
-      return 'm';
+      return <span role="img" aria-label="Flags Remaining">💣</span>;
     }
     return <span style={{ color: neighborsColorMap[neighbors] }}>{neighbors}</span>;
   }

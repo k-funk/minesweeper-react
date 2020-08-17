@@ -2,9 +2,16 @@ import React, { useState } from 'react';
 import { PropTypes as T } from 'prop-types';
 import { range, sampleSize } from 'lodash';
 import classNames from 'classnames';
+import { Button } from 'reactstrap';
+import styled from 'styled-components';
+
 
 import Board from 'app/components/board';
 import DifficultySelector from 'app/components/difficulty_selector';
+
+const FlagsRemainingContainer = styled.div`
+  width: 60px;
+`;
 
 
 export const GAME_STATUS = {
@@ -222,9 +229,7 @@ export default function Game({ className }) {
   };
 
   const handleDifficultySelect = difficulty => {
-    console.log(difficulty);
     const newBoardConfig = BOARD_CONFIGS[difficulty];
-    console.log(newBoardConfig);
     setBoardConfig(newBoardConfig);
     setBoard(initBoardData(newBoardConfig));
     setGameStatus(GAME_STATUS.NOT_STARTED);
@@ -238,13 +243,21 @@ export default function Game({ className }) {
   return (
     <div className={classNames(className)}>
       <div>Game Status: {gameStatus}</div>
-      <div>Flags Remaining: {boardConfig.mines - flagged}</div>
-      <DifficultySelector
-        onSelect={handleDifficultySelect}
-        options={BOARD_CONFIGS}
-        currentDifficulty={boardConfig.readable}
-      />
-      <button type="button" onClick={handleResetBoard}>reset</button>
+      <div className="d-flex justify-content-between mb-2">
+        <DifficultySelector
+          className="mr-2"
+          onSelect={handleDifficultySelect}
+          options={BOARD_CONFIGS}
+          currentDifficulty={boardConfig.readable}
+        />
+        <Button size="sm" outline color="secondary" onClick={handleResetBoard}>
+          <span className="fas fa-redo" />
+        </Button>
+        <FlagsRemainingContainer>
+          <span role="img" aria-label="Flags Remaining">🚩</span>
+          {boardConfig.mines - flagged}
+        </FlagsRemainingContainer>
+      </div>
       <Board
         board={board}
         onCellClick={handleCellClick}

@@ -6,8 +6,8 @@ import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from
 
 export default function DifficultySelector({ className, onSelect, options, currentDifficulty }) {
   return (
-    <UncontrolledDropdown className={classNames(className)}>
-      <DropdownToggle color="primary" caret>
+    <UncontrolledDropdown className={classNames(className)} size="sm">
+      <DropdownToggle color="primary" outline caret>
         {currentDifficulty}
       </DropdownToggle>
       <DropdownMenu>
