@@ -1,23 +1,15 @@
 import React from 'react';
-import { HashRouter, Switch, Route } from 'react-router-dom';
 import { Container } from 'reactstrap';
 
-import MainNav from 'app/components/main_nav';
-import MainPage from 'app/components/main_page';
+import Game from 'app/components/game';
 
 
 export default function App() {
   return (
-    <HashRouter>
-      <Container>
-        <MainNav />
-
-        <Switch>
-          <Route path="/">
-            <MainPage />
-          </Route>
-        </Switch>
-      </Container>
-    </HashRouter>
+    <Container>
+      <div className="d-flex justify-content-center">
+        <Game />
+      </div>
+    </Container>
   );
 }
